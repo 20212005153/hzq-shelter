@@ -1,6 +1,7 @@
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
-import CustomCursor from "@/components/CustomCursor";
+import CustomCursor from "@/components/CustomCursor"
+import AmbientSound from "@/components/AmbientSound";
 
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
     <html lang="zh" className="dark">
       <body className={`${mono.variable} antialiased`}>
         <CustomCursor />
+        <AmbientSound />
         {children}
       </body>
     </html>
