@@ -1,14 +1,36 @@
 'use client'
 
-// 统一音效工具，Web Audio API，无需任何音频文件
-function ctx() {
-  return new (window.AudioContext || window.webkitAudioContext)()
+// Claude: hover 节流 — 防止快速划过时音效堆叠
+let lastHoverTime = 0
+const HOVER_THROTTLE_MS = 80
+
+let audioCtx = null
+
+function getAudioContext() {
+  if (typeof window === 'undefined') return null
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+  }
+  return audioCtx
 }
 
-// 悬停音：极短高频滴声
-export function playHover() {
+function withAudio(run) {
   try {
-    const c = ctx()
+    const c = getAudioContext()
+    if (!c) return
+    if (c.state === 'suspended') {
+      c.resume().catch(() => {})
+    }
+    run(c)
+  } catch {}
+}
+
+// 悬停音：极短高频滴声（Claude: 节流 80ms，防止快速划过音效爆炸）
+export function playHover() {
+  const now = Date.now()
+  if (now - lastHoverTime < HOVER_THROTTLE_MS) return
+  lastHoverTime = now
+  withAudio((c) => {
     const o = c.createOscillator()
     const g = c.createGain()
     o.type = 'sine'
@@ -18,13 +40,12 @@ export function playHover() {
     g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.05)
     o.connect(g); g.connect(c.destination)
     o.start(); o.stop(c.currentTime + 0.05)
-  } catch {}
+  })
 }
 
 // 点击音：赛博"咔"声
 export function playClick() {
-  try {
-    const c = ctx()
+  withAudio((c) => {
     // 低频冲击
     const o1 = c.createOscillator()
     const g1 = c.createGain()
@@ -44,13 +65,12 @@ export function playClick() {
     g2.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.04)
     o2.connect(g2); g2.connect(c.destination)
     o2.start(); o2.stop(c.currentTime + 0.04)
-  } catch {}
+  })
 }
 
 // 导航音：上扬滑音
 export function playNav() {
-  try {
-    const c = ctx()
+  withAudio((c) => {
     const o = c.createOscillator()
     const g = c.createGain()
     o.type = 'sine'
@@ -60,13 +80,12 @@ export function playNav() {
     g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.15)
     o.connect(g); g.connect(c.destination)
     o.start(); o.stop(c.currentTime + 0.15)
-  } catch {}
+  })
 }
 
 // 卡片悬停音：轻微静电
 export function playCardHover() {
-  try {
-    const c = ctx()
+  withAudio((c) => {
     const bufSize = Math.floor(c.sampleRate * 0.03)
     const buf = c.createBuffer(1, bufSize, c.sampleRate)
     const data = buf.getChannelData(0)
@@ -80,13 +99,12 @@ export function playCardHover() {
     g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.03)
     src.connect(f); f.connect(g); g.connect(c.destination)
     src.start()
-  } catch {}
+  })
 }
 
 // 外链跳转音：下降确认音
 export function playLink() {
-  try {
-    const c = ctx()
+  withAudio((c) => {
     const notes = [880, 660]
     notes.forEach((freq, i) => {
       const o = c.createOscillator()
@@ -99,7 +117,7 @@ export function playLink() {
       o.connect(g); g.connect(c.destination)
       o.start(t); o.stop(t + 0.1)
     })
-  } catch {}
+  })
 }
 
 export function useSounds() {

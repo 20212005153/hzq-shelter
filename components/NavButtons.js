@@ -1,5 +1,5 @@
 'use client'
-import { playNav, playLink } from '@/hooks/useSounds'
+import { playHover, playNav, playLink } from '@/hooks/useSounds'
 
 export default function NavButtons() {
   return (
@@ -7,7 +7,7 @@ export default function NavButtons() {
       <a
         href="#projects"
         onClick={playNav}
-        onMouseEnter={playNav}
+        onMouseEnter={playHover}
         className="border border-[#00ff41] text-[#00ff41] px-6 py-2 text-sm hover:bg-[#00ff41]/10 transition-colors tracking-widest uppercase"
         data-hover="true"
       >
@@ -16,7 +16,7 @@ export default function NavButtons() {
       <a
         href="#blog"
         onClick={playNav}
-        onMouseEnter={playNav}
+        onMouseEnter={playHover}
         className="border border-[#00cc33]/40 text-[#00cc33]/60 px-6 py-2 text-sm hover:border-[#00ff41]/60 hover:text-[#00ff41] transition-colors tracking-widest uppercase"
         data-hover="true"
       >
@@ -27,7 +27,7 @@ export default function NavButtons() {
         target="_blank"
         rel="noreferrer"
         onClick={playLink}
-        onMouseEnter={playNav}
+        onMouseEnter={playHover}
         className="border border-[#00cc33]/30 text-[#00cc33]/50 px-6 py-2 text-sm hover:border-[#00ff41]/60 hover:text-[#00ff41] transition-colors tracking-widest uppercase"
         data-hover="true"
       >

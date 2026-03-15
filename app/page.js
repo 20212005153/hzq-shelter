@@ -42,7 +42,7 @@ const BLOG_POSTS = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen pb-32 font-mono">
+    <main className="min-h-screen pb-32 font-mono">
       {/* ── HERO ── */}
       <section className="min-h-screen flex flex-col justify-center px-6 md:px-16 max-w-5xl mx-auto">
         <div className="mb-6 text-[#00cc33]/50 text-sm tracking-widest uppercase">
@@ -97,19 +97,27 @@ export default function Home() {
         <h2 className="text-2xl text-[#00ff41] glow mb-8">博客</h2>
         <div className="space-y-3">
           {BLOG_POSTS.map(post => (
-            <div
+            <article
               key={post.slug}
-              className="border border-[#1a2a1a] bg-[#0d0d0d] p-4 glow-border hover:border-[#00ff41]/30 transition-all flex items-start gap-4"
+              className="border border-[#1a2a1a] bg-[#0d0d0d] p-4 glow-border flex items-start gap-4"
             >
               <span className="text-[#00cc33]/30 text-xs shrink-0 mt-0.5">{post.date}</span>
               <div>
-                <div className="text-[#00ff41] font-semibold mb-1">{post.title}</div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-[#00ff41] font-semibold">{post.title}</h3>
+                  <span className="text-[10px] border border-[#1a2a1a] px-2 py-0.5 text-[#00cc33]/45 tracking-widest uppercase">
+                    Draft
+                  </span>
+                </div>
                 <div className="text-[#00cc33]/50 text-sm">{post.summary}</div>
+                <div className="mt-2 text-[#00cc33]/35 text-xs">
+                  文章页尚未发布，当前仅展示选题与摘要。
+                </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
-        <div className="mt-4 text-[#00cc33]/30 text-xs">// 更多文章即将上线...</div>
+        <div className="mt-4 text-[#00cc33]/30 text-xs">更多文章即将上线...</div>
       </section>
 
       {/* ── CHANGELOG ── */}
@@ -133,6 +141,6 @@ export default function Home() {
 
       {/* ── BOTTOM TERMINAL ── */}
       <BottomTerminal />
-    </div>
+    </main>
   )
 }

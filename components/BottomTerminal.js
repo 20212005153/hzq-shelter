@@ -27,9 +27,10 @@ export default function BottomTerminal() {
           setCharIdx(c => c + 1)
         }, Math.random() * 80 + 30)
         return () => clearTimeout(t)
-      } else {
-        setPhase('output')
       }
+
+      const t = setTimeout(() => setPhase('output'), 0)
+      return () => clearTimeout(t)
     }
 
     if (phase === 'output') {
@@ -61,8 +62,9 @@ export default function BottomTerminal() {
           <span className="w-2 h-2 rounded-full bg-[#00ff41] inline-block" style={{ boxShadow: '0 0 6px #00ff41' }} />
           terminal — hzq@shelter
         </div>
-        {lines.slice(-2).map((l, i) => (
-          <div key={i} className="text-[#00cc33]/50 leading-5">
+        {/* Claude: 用 cmd 内容作 key，避免 key={i} 反模式 */}
+        {lines.slice(-2).map((l) => (
+          <div key={l.cmd} className="text-[#00cc33]/50 leading-5">
             <span className="text-[#00ff41]/70">$ </span>{l.cmd}
             <br />
             <span className="pl-2">{l.out}</span>

@@ -4,7 +4,26 @@
 
 ---
 
+## [v1.3.0] — 2026-03-15（Claude review）
+
+### Claude 修复
+- **CustomCursor 加载闪烁**：光标元素初始 `opacity:0`，首次 `pointermove` 后才显示，修复加载时停在 (0,0) 闪烁的问题
+- **playHover 音效堆叠**：加 80ms 节流（`lastHoverTime`），快速划过多个元素时不再爆炸式触发
+- **AmbientSound 竞态**：新增 `stoppedRef` 守卫，`stop()` 后仍在飞行的 `setTimeout` 回调会提前退出，不再 push 节点到已清空的 `nodesRef`
+- **BottomTerminal `key={i}`**：改用 `l.cmd` 作稳定 key，消除 index 作 key 反模式
+- **ChangelogSection `key={i}`**：改用 `item` 内容作 key；归属标注：`[Claude]` 绿色 / `[Codex]` 蓝色，视觉区分贡献方
+
+---
+
 ## [v1.2.0] — 2026-03-15
+
+### Codex修改的
+- 修复 `npm run lint` 失败：移除 JSX 注释文本误用，重构 `TerminalTyper` 与 `BottomTerminal` 的 effect 状态推进方式。
+- 修复离线构建失败：移除 `next/font/google` 对 Google Fonts 的构建期依赖，改为本地等宽字体栈。
+- 优化交互稳定性：`hooks/useSounds.js` 改为复用单例 `AudioContext`，避免 hover/click 不断创建音频上下文。
+- 优化可访问性：自定义光标仅在精细指针设备启用，新增 `prefers-reduced-motion` 降级与按钮 ARIA 状态。
+- 优化资源清理：`StatCounter` 在卸载时清理 interval，`CustomCursor` 改为事件委托，避免反复扫描和重复绑定。
+- 优化内容表达：博客卡片明确标记为 `Draft`，减少“看起来能点但实际没有文章页”的误导。
 
 ### 新增
 - 全局交互音效系统（`hooks/useSounds.js`）

@@ -7,15 +7,26 @@
   --bg: #050505;
   --bg2: #0d0d0d;
   --border: #1a2a1a;
+  --font-mono:
+    "SFMono-Regular",
+    "SF Mono",
+    "Cascadia Mono",
+    "JetBrains Mono",
+    "Fira Code",
+    "Courier New",
+    monospace;
 }
-
-* { cursor: none !important; }
 
 body {
   background: var(--bg);
   color: var(--green);
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-mono);
   overflow-x: hidden;
+}
+
+body.custom-cursor-enabled,
+body.custom-cursor-enabled * {
+  cursor: none !important;
 }
 
 /* 扫描线 + 像素网格 全局遮罩 */
@@ -135,3 +146,16 @@ body::after {
 /* 链接 */
 a { color: var(--green); text-decoration: none; }
 a:hover { text-shadow: 0 0 8px var(--green); }
+
+@media (prefers-reduced-motion: reduce) {
+  body::after,
+  .glitch::before,
+  .glitch::after,
+  .blink {
+    animation: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}

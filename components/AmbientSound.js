@@ -6,7 +6,11 @@ export default function AmbientSound() {
   const ctxRef = useRef(null)
   const nodesRef = useRef([])
 
+  // Claude: 用 stoppedRef 防止 stop() 后仍在飞行的 setTimeout 继续向 nodesRef push
+  const stoppedRef = useRef(false)
+
   const stop = () => {
+    stoppedRef.current = true
     nodesRef.current.forEach(n => { try { n.stop?.(); n.disconnect?.() } catch {} })
     nodesRef.current = []
     ctxRef.current?.close()
@@ -14,6 +18,7 @@ export default function AmbientSound() {
   }
 
   const start = () => {
+    stoppedRef.current = false
     const ctx = new (window.AudioContext || window.webkitAudioContext)()
     ctxRef.current = ctx
     const master = ctx.createGain()
@@ -42,8 +47,9 @@ export default function AmbientSound() {
     droneGain.connect(master)
     drone.start()
 
-    // ── 2. 白噪声静电（随机爆发）──
+    // ── 2. 白噪声静电（随机爆发）── Claude: 加 stopped 竞态守卫
     const startNoiseBurst = () => {
+      if (stoppedRef.current) return
       const bufSize = ctx.sampleRate * 0.08
       const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate)
       const data = buf.getChannelData(0)
@@ -70,8 +76,9 @@ export default function AmbientSound() {
     }
     startNoiseBurst()
 
-    // ── 3. 高频数字哔声（间歇性）──
+    // ── 3. 高频数字哔声（间歇性）── Claude: 加 stopped 竞态守卫
     const startBeep = () => {
+      if (stoppedRef.current) return
       const osc = ctx.createOscillator()
       const g = ctx.createGain()
       osc.type = 'square'
@@ -103,6 +110,8 @@ export default function AmbientSound() {
   return (
     <button
       onClick={toggle}
+      aria-pressed={on}
+      aria-label={on ? '关闭环境音效' : '开启环境音效'}
       data-hover="true"
       title={on ? '关闭环境音效' : '开启环境音效'}
       className={`fixed top-4 right-4 z-[9990] flex items-center gap-2 border px-3 py-1.5 text-xs tracking-widest uppercase transition-all font-mono ${

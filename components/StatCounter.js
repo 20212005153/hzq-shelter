@@ -2,11 +2,20 @@
 import { useEffect, useRef, useState } from 'react'
 
 function Counter({ target, suffix = '' }) {
-  const [val, setVal] = useState(0)
+  const [val, setVal] = useState(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return target
+    }
+    return 0
+  })
   const ref = useRef(null)
   const started = useRef(false)
+  const intervalRef = useRef(null)
 
   useEffect(() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reducedMotion) return
+
     const obs = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !started.current) {
         started.current = true
@@ -14,15 +23,25 @@ function Counter({ target, suffix = '' }) {
         const steps = 40
         const step = target / steps
         let cur = 0
-        const iv = setInterval(() => {
+        intervalRef.current = setInterval(() => {
           cur = Math.min(cur + step, target)
           setVal(Math.round(cur))
-          if (cur >= target) clearInterval(iv)
+          if (cur >= target && intervalRef.current) {
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
+          }
         }, duration / steps)
       }
     }, { threshold: 0.5 })
     if (ref.current) obs.observe(ref.current)
-    return () => obs.disconnect()
+
+    return () => {
+      obs.disconnect()
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
   }, [target])
 
   return (

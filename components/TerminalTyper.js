@@ -39,9 +39,10 @@ export default function TerminalTyper() {
         setCharIdx(c => c + 1)
       }, delay)
       return () => clearTimeout(t)
-    } else {
-      setPause(true)
     }
+
+    const t = setTimeout(() => setPause(true), 0)
+    return () => clearTimeout(t)
   }, [charIdx, lineIdx, pause])
 
   const isCommand = LINES[lineIdx]?.startsWith('>')
