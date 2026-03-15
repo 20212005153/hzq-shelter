@@ -2,6 +2,9 @@ import GlitchTitle from '@/components/GlitchTitle'
 import TerminalTyper from '@/components/TerminalTyper'
 import StatCounter from '@/components/StatCounter'
 import BottomTerminal from '@/components/BottomTerminal'
+import NavButtons from '@/components/NavButtons'
+import ProjectCard from '@/components/ProjectCard'
+import ChangelogSection from '@/components/ChangelogSection'
 
 const PROJECTS = [
   {
@@ -15,10 +18,10 @@ const PROJECTS = [
   {
     id: 2,
     name: 'hzq-shelter',
-    desc: '你现在看到的这个网站。Next.js极客风个人主页，含glitch、扫描线、终端动效。',
-    tags: ['Next.js', 'CSS Animation', 'Vercel'],
-    url: '#',
-    status: 'WIP',
+    desc: '你现在看到的这个网站。Next.js极客风个人主页，含glitch、扫描线、终端动效、交互音效。',
+    tags: ['Next.js', 'Web Audio', 'Vercel'],
+    url: 'https://github.com/20212005153/hzq-shelter',
+    status: 'DEPLOYED',
   },
 ]
 
@@ -56,37 +59,12 @@ export default function Home() {
         </div>
 
         <div className="mt-8 border border-[#1a2a1a] bg-[#0d0d0d] p-4 max-w-lg glow-border">
-          <div className="text-[#00cc33]/40 text-xs mb-2 tracking-widest">TERMINAL — v1.0.0</div>
+          <div className="text-[#00cc33]/40 text-xs mb-2 tracking-widest">TERMINAL — v1.2.0</div>
           <TerminalTyper />
         </div>
 
-        <div className="mt-10 flex gap-4 flex-wrap">
-          <a
-            href="#projects"
-            className="border border-[#00ff41] text-[#00ff41] px-6 py-2 text-sm hover:bg-[#00ff41]/10 transition-colors tracking-widest uppercase"
-            data-hover="true"
-          >
-            [查看项目]
-          </a>
-          <a
-            href="#blog"
-            className="border border-[#00cc33]/40 text-[#00cc33]/60 px-6 py-2 text-sm hover:border-[#00ff41]/60 hover:text-[#00ff41] transition-colors tracking-widest uppercase"
-            data-hover="true"
-          >
-            [读博客]
-          </a>
-          <a
-            href="https://github.com/20212005153"
-            target="_blank"
-            rel="noreferrer"
-            className="border border-[#00cc33]/30 text-[#00cc33]/50 px-6 py-2 text-sm hover:border-[#00ff41]/60 hover:text-[#00ff41] transition-colors tracking-widest uppercase"
-            data-hover="true"
-          >
-            [GitHub]
-          </a>
-        </div>
+        <NavButtons />
 
-        {/* 滚动提示 */}
         <div className="mt-20 text-[#00cc33]/30 text-xs tracking-widest animate-pulse">
           ▼ SCROLL TO EXPLORE ▼
         </div>
@@ -107,37 +85,7 @@ export default function Home() {
         </div>
         <h2 className="text-2xl text-[#00ff41] glow mb-8">作品集</h2>
         <div className="grid md:grid-cols-2 gap-4">
-          {PROJECTS.map(p => (
-            <a
-              key={p.id}
-              href={p.url}
-              target="_blank"
-              rel="noreferrer"
-              className="block border border-[#1a2a1a] bg-[#0d0d0d] p-5 glow-border hover:border-[#00ff41]/40 transition-all group"
-              data-hover="true"
-            >
-              <div className="flex justify-between items-start mb-2">
-                <span className="text-[#00ff41] font-bold group-hover:glow">
-                  ./{p.name}
-                </span>
-                <span className={`text-xs px-2 py-0.5 border ${
-                  p.status === 'DEPLOYED'
-                    ? 'border-[#00ff41]/40 text-[#00ff41]/70'
-                    : 'border-yellow-500/40 text-yellow-500/70'
-                }`}>
-                  {p.status}
-                </span>
-              </div>
-              <p className="text-[#00cc33]/60 text-sm mb-3 leading-relaxed">{p.desc}</p>
-              <div className="flex flex-wrap gap-2">
-                {p.tags.map(t => (
-                  <span key={t} className="text-xs border border-[#1a2a1a] px-2 py-0.5 text-[#00cc33]/50">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </a>
-          ))}
+          {PROJECTS.map(p => <ProjectCard key={p.id} project={p} />)}
         </div>
       </section>
 
@@ -151,7 +99,7 @@ export default function Home() {
           {BLOG_POSTS.map(post => (
             <div
               key={post.slug}
-              className="border border-[#1a2a1a] bg-[#0d0d0d] p-4 glow-border hover:border-[#00ff41]/30 transition-all flex items-start gap-4 cursor-default"
+              className="border border-[#1a2a1a] bg-[#0d0d0d] p-4 glow-border hover:border-[#00ff41]/30 transition-all flex items-start gap-4"
             >
               <span className="text-[#00cc33]/30 text-xs shrink-0 mt-0.5">{post.date}</span>
               <div>
@@ -163,6 +111,9 @@ export default function Home() {
         </div>
         <div className="mt-4 text-[#00cc33]/30 text-xs">// 更多文章即将上线...</div>
       </section>
+
+      {/* ── CHANGELOG ── */}
+      <ChangelogSection />
 
       {/* ── ABOUT ── */}
       <section className="px-6 md:px-16 max-w-5xl mx-auto mb-24">
