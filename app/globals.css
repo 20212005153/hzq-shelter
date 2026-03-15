@@ -1,26 +1,137 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --green: #00ff41;
+  --green-dim: #00cc33;
+  --green-dark: #003300;
+  --bg: #050505;
+  --bg2: #0d0d0d;
+  --border: #1a2a1a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+* { cursor: none !important; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--green);
+  font-family: 'Courier New', Courier, monospace;
+  overflow-x: hidden;
 }
+
+/* 扫描线 + 像素网格 全局遮罩 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 65, 0.015) 2px,
+      rgba(0, 255, 65, 0.015) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 8px,
+      rgba(0, 255, 65, 0.008) 8px,
+      rgba(0, 255, 65, 0.008) 9px
+    );
+}
+
+/* 扫描光条 */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 255, 65, 0.04) 50%,
+    transparent 100%
+  );
+  background-size: 100% 8px;
+  animation: scanline 8s linear infinite;
+}
+
+@keyframes scanline {
+  0%   { background-position: 0 -100vh; }
+  100% { background-position: 0 100vh; }
+}
+
+/* Glitch 动画 */
+@keyframes glitch1 {
+  0%, 90%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+  92%  { clip-path: inset(20% 0 60% 0); transform: translate(-4px, 2px); }
+  94%  { clip-path: inset(50% 0 30% 0); transform: translate(4px, -2px); }
+  96%  { clip-path: inset(10% 0 80% 0); transform: translate(-2px, 1px); }
+  98%  { clip-path: inset(70% 0 10% 0); transform: translate(3px, -1px); }
+}
+
+@keyframes glitch2 {
+  0%, 90%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+  92%  { clip-path: inset(60% 0 20% 0); transform: translate(4px, -2px); }
+  94%  { clip-path: inset(30% 0 50% 0); transform: translate(-4px, 2px); }
+  96%  { clip-path: inset(80% 0 10% 0); transform: translate(2px, -1px); }
+  98%  { clip-path: inset(10% 0 70% 0); transform: translate(-3px, 1px); }
+}
+
+.glitch {
+  position: relative;
+}
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  font: inherit;
+}
+.glitch::before {
+  color: #ff0040;
+  animation: glitch1 4s infinite;
+  animation-delay: 1s;
+}
+.glitch::after {
+  color: #00eeff;
+  animation: glitch2 4s infinite;
+  animation-delay: 1s;
+}
+
+/* 计数器滚动 */
+@keyframes countUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.count-anim {
+  display: inline-block;
+  animation: countUp 0.6s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+/* 打字光标闪烁 */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.blink { animation: blink 1s step-end infinite; }
+
+/* 绿色发光 */
+.glow {
+  text-shadow: 0 0 8px var(--green), 0 0 24px rgba(0,255,65,0.4);
+}
+.glow-border {
+  box-shadow: 0 0 0 1px var(--border), 0 0 12px rgba(0,255,65,0.1);
+}
+
+/* 滚动条 */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--green-dark); border-radius: 2px; }
+
+/* 链接 */
+a { color: var(--green); text-decoration: none; }
+a:hover { text-shadow: 0 0 8px var(--green); }
